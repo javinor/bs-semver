@@ -1,0 +1,32 @@
+{
+  "name": "@javinor/bs-semver",
+  "version": "0.1.0",
+  "description": "BuckleScript bindings for semver",
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "clean": "bsb -clean-world",
+    "pretest": "npm run build",
+    "test": "jest"
+  },
+  "keywords": [
+    "BuckleScript",
+    "ReasonML",
+    "reason",
+    "semver"
+  ],
+  "author": "Jonathan Avinor <javinor@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@glennsl/bs-jest": "^0.4.8",
+    "bs-platform": "^5.0.4",
+    "jest": "^24.8.0"
+  },
+  "peerDependencies": {
+    "semver": "^6.0.0"
+  },
+  "files": [   
+    "src/Semver.re", 
+    "bsconfig.json"
+   ]
+}
