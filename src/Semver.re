@@ -9,6 +9,14 @@ module Version: {
   let show = v => v;
 };
 
+module Range : {
+  type t;
+  let show: t => string;
+} = {
+  type t = string;
+  let show = r => r;
+}
+
 [@bs.deriving {jsConverter: newType}]
 type release = [
   | [@bs.as "major"] `Major
@@ -99,23 +107,30 @@ external eq: (Version.t, Version.t) => bool = "eq";
 [@bs.module "semver"] [@bs.val]
 external neq: (Version.t, Version.t) => bool = "neq";
 
+/* === ranges === */
+[@bs.module "semver"] [@bs.val]
+external validRange: string => Js.nullable(Range.t) = "validRange";
+
+[@bs.module "semver"] [@bs.val]
+external satisfies: Version.t => Range.t => bool = "satisfies";
+
+[@bs.module "semver"] [@bs.val]
+external minSatisfying: array(Version.t) => Range.t => Js.nullable(Version.t) = "minSatisfying";
+
+[@bs.module "semver"] [@bs.val]
+external maxSatisfying: array(Version.t) => Range.t => Js.nullable(Version.t) = "maxSatisfying";
+
 /*
  === remaining semver keys: ===
  'parse',
  'SemVer',
-
- 'cmp',
  'Comparator',
  'Range',
- 'toComparators',
- 'satisfies',
- 'maxSatisfying',
- 'minSatisfying',
+ 'coerce'
  'minVersion',
- 'validRange',
+ 'toComparators',
  'ltr',
  'gtr',
  'outside',
  'intersects',
- 'coerce'
   */

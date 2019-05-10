@@ -4,7 +4,14 @@ Bindings for [the official NPM semver package](https://www.npmjs.com/package/sem
 
 ## Usage
 
-TODO
+TODO: publish to npm
+
+Do the npm dance:
+```
+npm install
+npm run build
+npm test
+```
 
 ## Notes
 
@@ -34,6 +41,9 @@ This is not supported in this bindings module, and might be implement in the fut
   * model this with `Js.Nullable.t` - how can I extend the polymorphic type?
 * How to handle return value of `prerelease('1.2.3-alpha.7')`? or `major` / `minor` / `patch`?
 * support `loose` flag for functions? `major` / `minor` / `patch` / etc.
-* not implement compareLoose
+* not implement `compareLoose`
+* not implement `cmp`
+* create module for Range
+* stop implementing
 
 

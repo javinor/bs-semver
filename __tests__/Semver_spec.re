@@ -11,7 +11,7 @@ describe("Semver", () => {
   );
 
   describe(".valid", () => {
-    test("wraps a valid version in a Version.t", () =>
+    test("converts a valid version string to a Version.t", () =>
       expect(valid("1.2.3") |> getExn |> Version.show) |> toBe("1.2.3")
     );
 
@@ -99,7 +99,7 @@ describe("Semver", () => {
     })
   );
 
-  describe(".path", () =>
+  describe(".patch", () =>
     test("returns the patch identifier", () => {
       let v = valid("1.2.3-alpha.7") |> getExn;
       expect(patch(v)) |> toBe("3");
@@ -300,6 +300,67 @@ describe("Semver", () => {
       let v1 = valid("1.2.3") |> getExn;
       let v2 = valid("1.2.3") |> getExn;
       expect(neq(v1, v2)) |> toBe(false);
+    });
+  });
+
+  describe(".validRange", () => {
+    test("converts a valid range string to a Range.t", () =>
+      expect(validRange("~1.2.3") |> getExn |> Range.show)
+      |> toBe(">=1.2.3 <1.3.0")
+    );
+
+    test("returns null for an invalid range", () =>
+      expect(valid("qweqwe")) |> toBe(Js.Nullable.null)
+    );
+  });
+
+  describe(".satisfies", () => {
+    test("returns true when version is in range", () => {
+      let range = validRange("1.2.7 || >=1.2.9 <2.0.0") |> getExn;
+      let version = valid("1.4.6") |> getExn;
+      expect(satisfies(version, range)) |> toBe(true);
+    });
+
+    test("returns false when version is not in range", () => {
+      let range = validRange("1.2.7 || >=1.2.9 <2.0.0") |> getExn;
+      let version = valid("1.2.8") |> getExn;
+      expect(satisfies(version, range)) |> toBe(false);
+    });
+  });
+
+  describe(".minSatisfying", () => {
+    test("returns the min version in range", () => {
+      let range = validRange("1.2") |> getExn;
+      let versions =
+        [|"1.2.3", "1.2.4"|] |> Array.map(str => str |> valid |> getExn);
+
+      expect(minSatisfying(versions, range) |> getExn |> Version.show)
+      |> toBe("1.2.3");
+    });
+
+    test("returns null if no version is in range", () => {
+      let range = validRange("1.3") |> getExn;
+      let versions =
+        [|"1.2.3", "1.2.4"|] |> Array.map(str => str |> valid |> getExn);
+      expect(minSatisfying(versions, range)) |> toBe(Js.Nullable.null);
+    });
+  });
+
+  describe(".maxSatisfying", () => {
+    test("returns the max version in range", () => {
+      let range = validRange("1.2") |> getExn;
+      let versions =
+        [|"1.2.3", "1.2.4"|] |> Array.map(str => str |> valid |> getExn);
+
+      expect(maxSatisfying(versions, range) |> getExn |> Version.show)
+      |> toBe("1.2.4");
+    });
+
+    test("returns null if no version is in range", () => {
+      let range = validRange("1.3") |> getExn;
+      let versions =
+        [|"1.2.3", "1.2.4"|] |> Array.map(str => str |> valid |> getExn);
+      expect(maxSatisfying(versions, range)) |> toBe(Js.Nullable.null);
     });
   });
 });
