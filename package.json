@@ -1,5 +1,5 @@
 {
-  "name": "@javinor/bs-semver",
+  "name": "@jvnr/bs-semver",
   "version": "0.1.0",
   "description": "BuckleScript bindings for semver",
   "scripts": {
@@ -25,8 +25,17 @@
   "peerDependencies": {
     "semver": "^6.0.0"
   },
-  "files": [   
-    "src/Semver.re", 
+  "files": [
+    "src/Semver.re",
     "bsconfig.json"
-   ]
+  ],
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javinor/bs-semver.git"
+  },
+  "bugs": {
+    "url": "https://github.com/javinor/bs-semver/issues"
+  },
+  "homepage": "https://github.com/javinor/bs-semver#readme"
 }

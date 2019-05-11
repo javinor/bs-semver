@@ -2,15 +2,8 @@
 
 Bindings for [the official NPM semver package](https://www.npmjs.com/package/semver)
 
-## Usage
-
-TODO: publish to npm
-
-Do the npm dance:
 ```
-npm install
-npm run build
-npm test
+npm install @jvnr/bs-semver
 ```
 
 ## Notes
@@ -23,9 +16,9 @@ Many functions accept an `options` argument which is either a boolean or an obje
 }
 ```
 
-This is not supported in this bindings module, and might be implement in the future (maybe)
+This is not supported in this bindings module, and might be implement in the future
 
-# Process
+## Process
 
 * How to write bindings? `semver spec`
 * Testing
