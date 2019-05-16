@@ -1,6 +1,6 @@
 {
   "name": "@jvnr/bs-semver",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "BuckleScript bindings for semver",
   "scripts": {
     "build": "bsb -make-world",

@@ -1,6 +1,6 @@
 {
   "name": "@jvnr/bs-semver",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "sources": [{
     "dir" : "src",
     "subdirs" : true
@@ -20,6 +20,5 @@
   "warnings": {
     "error" : "+101"
   },
-  "namespace": true,
   "refmt": 3
 }
