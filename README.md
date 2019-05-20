@@ -2,23 +2,43 @@
 
 Bindings for [the official NPM semver package](https://www.npmjs.com/package/semver)
 
+## Usage
+
+Do the bindings dance:
+
 ```
-npm install @jvnr/bs-semver
+npm install --save @jvnr/bs-semver
+npm install --save semver
+```
+
+in `bsconfig.json`:
+```json
+{
+  ...
+  "bs-dependencies": ["@jvnr/bs-semver"]
+}
 ```
 
 ## Notes
 
-Many functions accept an `options` argument which is either a boolean or an object and both default to:
+The API exposed by these bindings is adapted to be ergonomic in ReasonML (imho).
+
+TL;DR
+
+The API exposed by this bindings differs from the original NPM module. I originally wrote it as a one-to-one translation of the NPM module, but after consuming these bindings for a different projects I realised that it must differ. e.g. Some functions were not implemented, the `Semver` object is not exposed since I never needed it, etc.
+
+Credits due to [Dmytro Gladkyi](https://github.com/gladimdim/bs-semver) for his [`bs-semver`](https://github.com/gladimdim/bs-semver) and article on [creating bindings for NPM packages](https://itnext.io/reasonml-create-bindings-for-npm-package-b8a3c6d0703e)
+
+
+## Questions and Forks in the Road
+
+What to do with functions that accept `options` argument? It is either a boolean or an object and both default to:
 ```js
 {
   loose: false,
   includePrerelease: false
 }
 ```
-
-This is not supported in this bindings module, and might be implement in the future
-
-## Process
 
 * How to write bindings? `semver spec`
 * Testing
@@ -38,5 +58,6 @@ This is not supported in this bindings module, and might be implement in the fut
 * not implement `cmp`
 * create module for Range
 * stop implementing
+
 
 
