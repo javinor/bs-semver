@@ -1,93 +1,23 @@
 [@bs.module "semver"] [@bs.val]
-external semver_spec_version: string = "SEMVER_SPEC_VERSION";
+external clean: string => Js.nullable(string) = "clean";
 
-module Version: {
-  type t;
-  let show: t => string;
-} = {
+[@bs.module "semver"] [@bs.val]
+external validRange: string => Js.nullable(string) = "validRange";
+
+/* === Versions === */
+
+module Version = {
   type t = string;
-  let show = v => v;
+  let toString = v => v;
+  let parse = str => clean(str) |> Js.Nullable.toOption;
+  let parseExn = str => parse(str) |> Belt.Option.getExn;
 };
 
-module Range : {
-  type t;
-  let show: t => string;
-} = {
-  type t = string;
-  let show = r => r;
-}
-
-[@bs.deriving {jsConverter: newType}]
-type release = [
-  | [@bs.as "major"] `Major
-  | [@bs.as "minor"] `Minor
-  | [@bs.as "patch"] `Patch
-  | [@bs.as "premajor"] `Premajor
-  | [@bs.as "preminor"] `Preminor
-  | [@bs.as "prepatch"] `Prepatch
-  | [@bs.as "prerelease"] `Prerelease
-];
-
-[@bs.deriving {jsConverter: newType}]
-type ordering =
-  | [@bs.as (-1)] LT
-  | [@bs.as 0] EQ
-  | [@bs.as 1] GT;
+[@bs.module "semver"] [@bs.val]
+external compare: (Version.t, Version.t) => int = "compare";
 
 [@bs.module "semver"] [@bs.val]
-external valid: string => Js.nullable(Version.t) = "valid";
-
-[@bs.module "semver"] [@bs.val]
-external clean: string => Js.nullable(Version.t) = "clean";
-
-[@bs.module "semver"] [@bs.val]
-external inc: (Version.t, abs_release, string) => Version.t = "inc";
-let inc = (v, r, ~identifier="", ()) => inc(v, releaseToJs(r), identifier);
-
-[@bs.module "semver"] [@bs.val]
-external diff: (Version.t, Version.t) => Js.Nullable.t(abs_release) = "diff";
-let diff = (v1, v2) =>
-  diff(v1, v2) |> Js.Nullable.bind(_, (. r) => releaseFromJs(r));
-
-[@bs.module "semver"] [@bs.val] external major: Version.t => int = "major";
-let major = v => major(v) |> string_of_int;
-
-[@bs.module "semver"] [@bs.val] external minor: Version.t => int = "minor";
-let minor = v => minor(v) |> string_of_int;
-
-[@bs.module "semver"] [@bs.val] external patch: Version.t => int = "patch";
-let patch = v => patch(v) |> string_of_int;
-
-[@bs.module "semver"] [@bs.val]
-external prerelease: Version.t => array(string) = "prerelease";
-let prerelease = v =>
-  prerelease(v) |> Js.Array.joinWith(".") |> Js.String.split(".");
-
-[@bs.module "semver"] [@bs.val]
-external compareIdentifiers: (string, string) => abs_ordering =
-  "compareIdentifiers";
-let compareIdentifiers = (id1, id2) =>
-  compareIdentifiers(id1, id2) |> orderingFromJs;
-
-[@bs.module "semver"] [@bs.val]
-external rcompareIdentifiers: (string, string) => abs_ordering =
-  "rcompareIdentifiers";
-let rcompareIdentifiers = (id1, id2) =>
-  rcompareIdentifiers(id1, id2) |> orderingFromJs;
-
-[@bs.module "semver"] [@bs.val]
-external compare: (Version.t, Version.t) => abs_ordering = "compare";
-let compare = (v1, v2) => compare(v1, v2) |> orderingFromJs;
-
-[@bs.module "semver"] [@bs.val]
-external rcompare: (Version.t, Version.t) => abs_ordering = "rcompare";
-let rcompare = (v1, v2) => rcompare(v1, v2) |> orderingFromJs;
-
-[@bs.module "semver"] [@bs.val]
-external sortInPlace: array(Version.t) => array(Version.t) = "sort";
-
-[@bs.module "semver"] [@bs.val]
-external rsortInPlace: array(Version.t) => array(Version.t) = "rsort";
+external rcompare: (Version.t, Version.t) => int = "rcompare";
 
 [@bs.module "semver"] [@bs.val]
 external gt: (Version.t, Version.t) => bool = "gt";
@@ -107,30 +37,62 @@ external eq: (Version.t, Version.t) => bool = "eq";
 [@bs.module "semver"] [@bs.val]
 external neq: (Version.t, Version.t) => bool = "neq";
 
-/* === ranges === */
 [@bs.module "semver"] [@bs.val]
-external validRange: string => Js.nullable(Range.t) = "validRange";
+external sortInPlace: array(Version.t) => array(Version.t) = "sort";
 
 [@bs.module "semver"] [@bs.val]
-external satisfies: Version.t => Range.t => bool = "satisfies";
+external rsortInPlace: array(Version.t) => array(Version.t) = "rsort";
+
+/* === Identifiers === */
+
+type release =
+  | Major
+  | Minor
+  | Patch
+  | Premajor
+  | Preminor
+  | Prepatch
+  | Prerelease;
+
+let release_of_string = str =>
+  switch (str) {
+  | "major" => Major
+  | "minor" => Minor
+  | "patch" => Patch
+  | "premajor" => Premajor
+  | "preminor" => Preminor
+  | "prepatch" => Prepatch
+  | "prerelease" => Prerelease
+  | _ => Js.Exn.raiseError("unable to convert unrecognized release")
+  };
 
 [@bs.module "semver"] [@bs.val]
-external minSatisfying: array(Version.t) => Range.t => Js.nullable(Version.t) = "minSatisfying";
+external diff: (Version.t, Version.t) => Js.Nullable.t(string) = "diff";
+let diff = (v1, v2) =>
+  diff(v1, v2)
+  |> Js.Nullable.toOption
+  |> Belt.Option.map(_, release_of_string);
+
+/* === Ranges === */
+
+module Range = {
+  type t = string;
+  let toString = r => r;
+  let parse = str => validRange(str) |> Js.Nullable.toOption;
+  let parseExn = str => parse(str) |> Belt.Option.getExn;
+};
 
 [@bs.module "semver"] [@bs.val]
-external maxSatisfying: array(Version.t) => Range.t => Js.nullable(Version.t) = "maxSatisfying";
+external satisfies: (Version.t, Range.t) => bool = "satisfies";
 
-/*
- === remaining semver keys: ===
- 'parse',
- 'SemVer',
- 'Comparator',
- 'Range',
- 'coerce'
- 'minVersion',
- 'toComparators',
- 'ltr',
- 'gtr',
- 'outside',
- 'intersects',
-  */
+[@bs.module "semver"] [@bs.val]
+external minSatisfying: (array(Version.t), Range.t) => Js.nullable(Version.t) =
+  "minSatisfying";
+let minSatisfying = (versions, range) =>
+  minSatisfying(versions, range) |> Js.Nullable.toOption;
+
+[@bs.module "semver"] [@bs.val]
+external maxSatisfying: (array(Version.t), Range.t) => Js.nullable(Version.t) =
+  "maxSatisfying";
+let maxSatisfying = (versions, range) =>
+  maxSatisfying(versions, range) |> Js.Nullable.toOption;
