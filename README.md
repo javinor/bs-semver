@@ -12,7 +12,7 @@ npm install --save semver
 ```
 
 in `bsconfig.json`:
-```json
+```
 {
   ...
   "bs-dependencies": ["@jvnr/bs-semver"]
@@ -25,9 +25,9 @@ The API exposed by these bindings is adapted to be ergonomic in ReasonML (imho).
 
 TL;DR
 
-The API exposed by this bindings differs from the original NPM module. I originally wrote it as a one-to-one translation of the NPM module, but after consuming these bindings for a different projects I realised that it must differ. e.g. Some functions were not implemented, the `Semver` object is not exposed since I never needed it, etc.
+The API exposed by this bindings differs from the original NPM module. I originally wrote it as a one-to-one translation of the NPM module, but after consuming these bindings for different projects I realised that it must differ. e.g. Some functions were not implemented, the `Semver` object is not exposed since I never needed it, etc.
 
-Credits due to [Dmytro Gladkyi](https://github.com/gladimdim/bs-semver) for his [`bs-semver`](https://github.com/gladimdim/bs-semver) and article on [creating bindings for NPM packages](https://itnext.io/reasonml-create-bindings-for-npm-package-b8a3c6d0703e)
+Credits due to [Dmytro Gladkyi](https://github.com/gladimdim/bs-semver) for his [`bs-semver`](https://github.com/gladimdim/bs-semver) and article on [creating bindings for NPM packages](https://itnext.io/reasonml-create-bindings-for-npm-package-b8a3c6d0703e). I'd rather have a PR to his repo but I diverged so quickly from his implementation that it seemed pointless.
 
 
 ## Questions and Forks in the Road
